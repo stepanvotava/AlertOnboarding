@@ -20,7 +20,7 @@ class AlertPageViewController: UIViewController, UIPageViewControllerDataSource,
     var alertview: AlertOnboarding!
     
     //FOR DATA
-    var arrayOfImage: [String]!
+    var arrayOfImage: [UIImage]!
     var arrayOfTitle: [String]!
     var arrayOfDescription: [String]!
     var viewControllers = [UIViewController]()
@@ -32,7 +32,7 @@ class AlertPageViewController: UIViewController, UIPageViewControllerDataSource,
     var delegate: AlertPageViewDelegate?
     
     
-    init (arrayOfImage: [String], arrayOfTitle: [String], arrayOfDescription: [String], alertView: AlertOnboarding) {
+    init (arrayOfImage: [UIImage], arrayOfTitle: [String], arrayOfDescription: [String], alertView: AlertOnboarding) {
         super.init(nibName: nil, bundle: nil)
         self.arrayOfImage = arrayOfImage
         self.arrayOfTitle = arrayOfTitle
@@ -115,11 +115,14 @@ class AlertPageViewController: UIViewController, UIPageViewControllerDataSource,
         
         let realIndex = arrayOfImage.count - index - 1
         
-        pageContentViewController.image.image = UIImage(named: arrayOfImage[realIndex])
+        pageContentViewController.image.image = arrayOfImage[realIndex]
+        pageContentViewController.labelMainTitle.font = alertview.options.titleFont
         pageContentViewController.labelMainTitle.text = arrayOfTitle[realIndex]
-        pageContentViewController.labelMainTitle.textColor = alertview.colorTitleLabel
+        pageContentViewController.labelMainTitle.textColor = alertview.options.colorTitleLabel
+
+        pageContentViewController.labelDescription.font = alertview.options.descriptionFont
         pageContentViewController.labelDescription.text = arrayOfDescription[realIndex]
-        pageContentViewController.labelDescription.textColor = alertview.colorDescriptionLabel
+        pageContentViewController.labelDescription.textColor = alertview.options.colorDescriptionLabel
         
         return pageContentViewController
     }
@@ -140,9 +143,9 @@ class AlertPageViewController: UIViewController, UIPageViewControllerDataSource,
         if pageControl != nil {
             pageControl.currentPage = arrayOfImage.count - index! - 1
             if pageControl.currentPage == arrayOfImage.count - 1 {
-                self.alertview.buttonBottom.setTitle(alertview.titleGotItButton, for: UIControlState())
+                self.alertview.buttonBottom.setTitle(alertview.options.titleGotItButton, for: UIControlState())
             } else {
-                self.alertview.buttonBottom.setTitle(alertview.titleSkipButton, for: UIControlState())
+                self.alertview.buttonBottom.setTitle(alertview.options.titleSkipButton, for: UIControlState())
             }
         }
     }
@@ -160,8 +163,8 @@ class AlertPageViewController: UIViewController, UIPageViewControllerDataSource,
     fileprivate func configurePageControl() {
         self.pageControl = UIPageControl(frame: CGRect(x: 0,y: 0,width: 0,height: 0))
         self.pageControl.backgroundColor = UIColor.clear
-        self.pageControl.pageIndicatorTintColor = alertview.colorPageIndicator
-        self.pageControl.currentPageIndicatorTintColor = alertview.colorCurrentPageIndicator
+        self.pageControl.pageIndicatorTintColor = alertview.options.colorPageIndicator
+        self.pageControl.currentPageIndicatorTintColor = alertview.options.colorCurrentPageIndicator
         self.pageControl.numberOfPages = arrayOfImage.count
         self.pageControl.currentPage = 0
         self.pageControl.isEnabled = false
@@ -194,7 +197,7 @@ class AlertPageViewController: UIViewController, UIPageViewControllerDataSource,
     
     //MARK: Called after notification orientation changement
     func configureConstraintsForPageControl() {
-        let alertViewSizeHeight = UIScreen.main.bounds.height*alertview.percentageRatioHeight
+        let alertViewSizeHeight = UIScreen.main.bounds.height*alertview.options.percentageRatioHeight
         let positionX = alertViewSizeHeight - (alertViewSizeHeight * 0.1) - 50
         self.pageControl.frame = CGRect(x: 0, y: positionX, width: self.view.bounds.width, height: 50)
     }

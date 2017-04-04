@@ -14,10 +14,32 @@ public protocol AlertOnboardingDelegate {
     func alertOnboardingNext(_ nextStep: Int)
 }
 
+public struct AlertOnboardingOptions {
+    var colorForAlertViewBackground = UIColor.white
+
+    var colorButtonBottomBackground = UIColor(red: 226/255, green: 237/255, blue: 248/255, alpha: 1.0)
+    var colorButtonText = UIColor(red: 118/255, green: 125/255, blue: 152/255, alpha: 1.0)
+
+    var colorTitleLabel: UIColor = UIColor(red: 171/255, green: 177/255, blue: 196/255, alpha: 1.0)
+    var colorDescriptionLabel: UIColor = UIColor(red: 171/255, green: 177/255, blue: 196/255, alpha: 1.0)
+
+    var colorPageIndicator = UIColor(red: 171/255, green: 177/255, blue: 196/255, alpha: 1.0)
+    var colorCurrentPageIndicator = UIColor(red: 118/255, green: 125/255, blue: 152/255, alpha: 1.0)
+
+    var percentageRatioHeight: CGFloat = 0.8
+    var percentageRatioWidth: CGFloat = 0.8
+
+    var titleSkipButton = "SKIP"
+    var titleGotItButton = "GOT IT !"
+
+    var titleFont = UIFont(name: "Avenir Heavy", size: 17.0)
+    var descriptionFont = UIFont(name: "Avenir Book ", size: 13.0)
+}
+
 open class AlertOnboarding: UIView, AlertPageViewDelegate {
     
     //FOR DATA  ------------------------
-    fileprivate var arrayOfImage = [String]()
+    fileprivate var arrayOfImage = [UIImage]()
     fileprivate var arrayOfTitle = [String]()
     fileprivate var arrayOfDescription = [String]()
     
@@ -28,30 +50,15 @@ open class AlertOnboarding: UIView, AlertPageViewDelegate {
     
     
     //PUBLIC VARS   ------------------------
-    open var colorForAlertViewBackground: UIColor = UIColor.white
-    
-    open var colorButtonBottomBackground: UIColor = UIColor(red: 226/255, green: 237/255, blue: 248/255, alpha: 1.0)
-    open var colorButtonText: UIColor = UIColor(red: 118/255, green: 125/255, blue: 152/255, alpha: 1.0)
-    
-    open var colorTitleLabel: UIColor = UIColor(red: 171/255, green: 177/255, blue: 196/255, alpha: 1.0)
-    open var colorDescriptionLabel: UIColor = UIColor(red: 171/255, green: 177/255, blue: 196/255, alpha: 1.0)
-    
-    open var colorPageIndicator = UIColor(red: 171/255, green: 177/255, blue: 196/255, alpha: 1.0)
-    open var colorCurrentPageIndicator = UIColor(red: 118/255, green: 125/255, blue: 152/255, alpha: 1.0)
-    
-    open var heightForAlertView: CGFloat!
-    open var widthForAlertView: CGFloat!
-    
-    open var percentageRatioHeight: CGFloat = 0.8
-    open var percentageRatioWidth: CGFloat = 0.8
-    
-    open var titleSkipButton = "SKIP"
-    open var titleGotItButton = "GOT IT !"
+    var heightForAlertView: CGFloat!
+    var widthForAlertView: CGFloat!
+
+    open var options = AlertOnboardingOptions()
     
     open var delegate: AlertOnboardingDelegate?
     
     
-    public init (arrayOfImage: [String], arrayOfTitle: [String], arrayOfDescription: [String]) {
+    public init (arrayOfImage: [UIImage], arrayOfTitle: [String], arrayOfDescription: [String]) {
         super.init(frame: CGRect(x: 0,y: 0,width: 0,height: 0))
         self.configure(arrayOfImage, arrayOfTitle: arrayOfTitle, arrayOfDescription: arrayOfDescription)
         self.arrayOfImage = arrayOfImage
@@ -80,10 +87,10 @@ open class AlertOnboarding: UIView, AlertPageViewDelegate {
     open func show() {
         
         //Update Color
-        self.buttonBottom.backgroundColor = colorButtonBottomBackground
-        self.backgroundColor = colorForAlertViewBackground
-        self.buttonBottom.setTitleColor(colorButtonText, for: UIControlState())
-        self.buttonBottom.setTitle(self.titleSkipButton, for: UIControlState())
+        self.buttonBottom.backgroundColor = options.colorButtonBottomBackground
+        self.backgroundColor = options.colorForAlertViewBackground
+        self.buttonBottom.setTitleColor(options.colorButtonText, for: UIControlState())
+        self.buttonBottom.setTitle(options.titleSkipButton, for: UIControlState())
         
         self.container = AlertPageViewController(arrayOfImage: arrayOfImage, arrayOfTitle: arrayOfTitle, arrayOfDescription: arrayOfDescription, alertView: self)
         self.container.delegate = self
@@ -131,7 +138,7 @@ open class AlertOnboarding: UIView, AlertPageViewDelegate {
     
     
     //MARK: FOR CONFIGURATION    --------------------------------------
-    fileprivate func configure(_ arrayOfImage: [String], arrayOfTitle: [String], arrayOfDescription: [String]) {
+    fileprivate func configure(_ arrayOfImage: [UIImage], arrayOfTitle: [String], arrayOfDescription: [String]) {
         
         self.buttonBottom = UIButton(frame: CGRect(x: 0,y: 0, width: 0, height: 0))
         self.buttonBottom.titleLabel?.font = UIFont(name: "Avenir-Black", size: 15)
@@ -158,8 +165,8 @@ open class AlertOnboarding: UIView, AlertPageViewDelegate {
         self.buttonBottom.removeConstraints(self.buttonBottom.constraints)
         self.container.view.removeConstraints(self.container.view.constraints)
         
-        heightForAlertView = UIScreen.main.bounds.height*percentageRatioHeight
-        widthForAlertView = UIScreen.main.bounds.width*percentageRatioWidth
+        heightForAlertView = UIScreen.main.bounds.height*options.percentageRatioHeight
+        widthForAlertView = UIScreen.main.bounds.width*options.percentageRatioWidth
         
         //Constraints for alertview
         let horizontalContraintsAlertView = NSLayoutConstraint(item: self, attribute: .centerXWithinMargins, relatedBy: .equal, toItem: superView, attribute: .centerXWithinMargins, multiplier: 1.0, constant: 0)
